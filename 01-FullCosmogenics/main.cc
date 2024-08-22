@@ -2,6 +2,8 @@
 #include "RMGLog.hh"
 #include "RMGManager.hh"
 
+#include "HardwareQEOverride.hh"
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -38,26 +40,34 @@ std::vector<std::string> getPMTNames(std::string filename)
 
 int main(int argc, char** argv) {
 
-  RMGLog::SetLogLevel(RMGLog::debug);
+  //RMGLog::SetLogLevel(RMGLog::debug);
   
   std::string filename = "gdml/WLGDOptical.gdml";
 
   RMGManager manager("FullCosmogenics", argc, argv);
+  //Overwrite the standard Hardware with one that reads
+  //in the PMT QE from datasheet
+  manager.SetUserInit(new HardwareQEOverride());
   manager.GetDetectorConstruction()->IncludeGDMLFile(filename);
 
+  //Get the physical volume names of the PMTs to register them
   std::vector<std::string> PMTnames = getPMTNames(filename);
   int id = 0;
+  //Register all of the PMTs
   for (const auto& name : PMTnames) 
   {
     manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kOptical, name, id);
     id++;
   }
-
+  //Register the germanium volume as germanium detector.
   manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kGermanium, "Ge_phys",id+1000);
 
+  //Interactive or batch mode?
   std::string macro = argc > 1 ? argv[1] : "";
   if (!macro.empty()) manager.IncludeMacroFile(macro);
   else manager.SetInteractive(true);
+
+  //Outputfilename and Threads. Then run
   std::string outputfilename = "build/output.csv";
   manager.SetOutputFileName(outputfilename);
   manager.SetNumberOfThreads(1);
