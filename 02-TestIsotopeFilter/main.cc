@@ -15,6 +15,11 @@ int main(int argc, char** argv) {
   manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kGermanium, "HPGe3", 2);
   manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kGermanium, "HPGe4", 3);
 
+  manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kOptical, "PMT1", 10);
+  manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kOptical, "PMT2", 11);
+  manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kOptical, "PMT3", 12);
+  manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kOptical, "PMT4", 13);
+
   std::string macro = argc > 1 ? argv[1] : "";
   if (!macro.empty()) manager.IncludeMacroFile(macro);
   else manager.SetInteractive(true);
