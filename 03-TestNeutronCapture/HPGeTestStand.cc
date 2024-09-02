@@ -43,7 +43,6 @@ G4VPhysicalVolume* HPGeTestStand::DefineGeometry() {
 
   auto LAr = man->FindOrBuildMaterial("G4_lAr");
   auto water = man->FindOrBuildMaterial("G4_WATER");
-  auto steel = man->FindOrBuildMaterial("G4_STAINLESS-STEEL");
 
   density = 3.01 * u::g / u::cm3;
 
@@ -61,25 +60,6 @@ G4VPhysicalVolume* HPGeTestStand::DefineGeometry() {
   Gdwater->AddMaterial(water, 1. - 0.002);
   Gdwater->AddMaterial(gadoliniumSulfate, 0.002);
 
-  // Set optical properties to also test the optical filter
-  //ooooooooooooooooooooooOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOoooooooooooooooooooo
-
-  std::vector<G4double> fenergySmall = { 1.239841939*u::eV/0.6,1.239841939*u::eV/0.1 }; // Convert energie from wavelength to eV
-  std::vector<G4double> energyAbs = {
-    1.239841939*u::eV/0.6, 1.239841939*u::eV/0.55, 1.239841939*u::eV/0.50, 1.239841939*u::eV/0.45,  1.239841939*u::eV/0.40,  
-    1.239841939*u::eV/0.35, 1.239841939*u::eV/0.30, 1.239841939*u::eV/0.25, 1.239841939*u::eV/0.20, 1.239841939*u::eV/0.19, 1.239841939*u::eV/0.1
-    }; 
-  std::vector<G4double> rindexWater = {1.33,1.33};
-
-  std::vector<G4double> absH2O =  {
-    10*u::m, 20*u::m, 50*u::m, 100*u::m,  100*u::m,  
-    100*u::m, 90*u::m, 20*u::m, 1*u::m, 0.001*u::mm, 0.0001*u::mm // See https://www.researchgate.net/publication/307856024_Ultraviolet_250-550_nm_absorption_spectrum_of_pure_water
-    };
-  G4MaterialPropertiesTable *mptH2O = new G4MaterialPropertiesTable();
-  mptH2O->AddProperty("RINDEX", fenergySmall, rindexWater);
-  mptH2O->AddProperty("ABSLENGTH", energyAbs, absH2O);
-  water->SetMaterialPropertiesTable(mptH2O);
-  Gdwater->SetMaterialPropertiesTable(mptH2O);
 
   // Place Volumes
   //ooooooooooooooooooooooOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOoooooooooooooooooooo
@@ -90,15 +70,14 @@ G4VPhysicalVolume* HPGeTestStand::DefineGeometry() {
 
   mat_enr_ge->AddElement(el_enr_ge, n_atoms = 1);
 
-  auto world_s = new G4Box("WorldLAr", 0.5 * u::m, 0.5 * u::m, 0.5 * u::m);
+  auto world_s = new G4Box("WoldWater", 0.5 * u::m, 0.5 * u::m, 0.5 * u::m);
 
-  auto world_l = new G4LogicalVolume(world_s, Gdwater, "WorldLAr");
+  auto world_l = new G4LogicalVolume(world_s, Gdwater, "WoldWater");
 
   auto world_p = new G4PVPlacement(nullptr, G4ThreeVector(), world_l, "World", nullptr, false, 0);
 
   auto hpge_s = new G4Box("HPGe", 10 * u::cm, 10 * u::cm, 10 * u::cm);
 
-  auto pmt_s = new G4Box("PMT", 10 * u::cm, 10 * u::cm, 40 * u::cm);
 
   auto hpge1_l =
       new G4LogicalVolume(hpge_s, G4Material::GetMaterial("CryogenicEnrichedGermanium"), "HPGe1");
@@ -109,7 +88,6 @@ G4VPhysicalVolume* HPGeTestStand::DefineGeometry() {
   auto hpge4_l =
       new G4LogicalVolume(hpge_s, G4Material::GetMaterial("CryogenicEnrichedGermanium"), "HPGe4");
 
-  auto pmt_l = new G4LogicalVolume(pmt_s, steel, "HPGe4");
   
   // Place HPGe Detectors
   auto spacing = 10.5 * u::cm;
@@ -121,31 +99,7 @@ G4VPhysicalVolume* HPGeTestStand::DefineGeometry() {
       0);
   new G4PVPlacement(nullptr, G4ThreeVector(-spacing, -spacing, 0), hpge4_l, "HPGe4", world_l, false,
       0);
-  // Place PMTs
-  new G4PVPlacement(nullptr, G4ThreeVector(+3. * spacing, +3. * spacing, 0), pmt_l, "PMT1", world_l, false,
-      0);
-  new G4PVPlacement(nullptr, G4ThreeVector(+3. * spacing, -3. * spacing, 0), pmt_l, "PMT2", world_l, false,
-      0);    
-  new G4PVPlacement(nullptr, G4ThreeVector(-3. * spacing, +3. * spacing, 0), pmt_l, "PMT3", world_l, false,
-      0);
-  new G4PVPlacement(nullptr, G4ThreeVector(-3. * spacing, -3. * spacing, 0), pmt_l, "PMT4", world_l, false,
-      0);
 
-  // Add detection surface to the PMTs
-  //ooooooooooooooooooooooOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOoooooooooooooooooooo
-
-  G4OpticalSurface *PMTsurface = new G4OpticalSurface("PMTSurface");
-  G4LogicalSkinSurface *PMTSkinSurface = new G4LogicalSkinSurface("PMTSkinSurface", pmt_l , PMTsurface);
-  PMTsurface->SetType(dielectric_metal);
-  PMTsurface->SetModel(glisur);
-  PMTsurface->SetFinish(polished);
-
-  G4MaterialPropertiesTable *PMT_MPT = new G4MaterialPropertiesTable();
-  std::vector<G4double> PMT_reflectivity = {0.,0.};
-  std::vector<G4double> PMT_efficiency = {1.,1.};
-  PMT_MPT->AddProperty("REFLECTIVITY", fenergySmall, PMT_reflectivity);
-  PMT_MPT->AddProperty("EFFICIENCY", fenergySmall, PMT_efficiency);
-  PMTsurface->SetMaterialPropertiesTable(PMT_MPT);
 
   return world_p;
 }
