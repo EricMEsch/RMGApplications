@@ -8,13 +8,14 @@
 
 /RMG/Output/ActivateOutputScheme IsotopeOutputScheme
 
-/RMG/GrabmayrGammaCascades/SetGammaCascadeFile 64,155,GammaCascades/156Gd-100Entries.txt
-/RMG/GrabmayrGammaCascades/SetGammaCascadeFile 64,157,GammaCascades/158Gd-100Entries.txt
+/RMG/GrabmayrGammaCascades/SetGammaCascadeFile 64 155 GammaCascades/156Gd-100Entries.txt
 /RMG/GrabmayrGammaCascades/SetGammaCascadeRandomStartLocation 1
+/RMG/GrabmayrGammaCascades/SetGammaCascadeFile 64 157 GammaCascades/158Gd-100Entries.txt
 /run/initialize
 
+
 /RMG/Output/NtuplePerDetector false
-/RMG/Output/FileName build/Custom.root
+/RMG/Output/FileName build/Custom.csv
 
 /RMG/Generator/Select GPS
 /gps/particle neutron

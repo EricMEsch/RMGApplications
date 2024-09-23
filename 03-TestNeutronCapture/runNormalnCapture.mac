@@ -10,7 +10,7 @@
 /run/initialize
 
 /RMG/Output/NtuplePerDetector false
-/RMG/Output/FileName build/Normal.root
+/RMG/Output/FileName build/Normal.csv
 
 /RMG/Generator/Select GPS
 /gps/particle neutron
