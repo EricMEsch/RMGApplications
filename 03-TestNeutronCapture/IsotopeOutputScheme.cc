@@ -1,7 +1,6 @@
 
 #include "IsotopeOutputScheme.hh"
 
-
 #include "G4AnalysisManager.hh"
 #include "G4Event.hh"
 #include "G4EventManager.hh"
@@ -19,41 +18,43 @@ void IsotopeOutputScheme::ClearBeforeEvent() {
 }
 
 // invoked in RMGRunAction::SetupAnalysisManager()
-void IsotopeOutputScheme::AssignOutputNames(G4AnalysisManager* ana_man) {
+void IsotopeOutputScheme::AssignOutputNames(G4AnalysisManager *ana_man) {
 
   auto rmg_man = RMGManager::Instance();
 
-  auto id =
-      rmg_man->RegisterNtuple(OutputRegisterID, ana_man->CreateNtuple("IsotopeOutput", "Event data"));
+  auto id = rmg_man->RegisterNtuple(
+      OutputRegisterID, ana_man->CreateNtuple("IsotopeOutput", "Event data"));
 
   ana_man->CreateNtupleIColumn(id, "evtid");
-  //Could be done with particle PDG but this way it is human readable
+  // Could be done with particle PDG but this way it is human readable
   ana_man->CreateNtupleIColumn(id, "Z");
   ana_man->CreateNtupleIColumn(id, "A");
 
   ana_man->FinishNtuple(id);
 }
 
-void IsotopeOutputScheme::TrackingActionPre(const G4Track* aTrack) {
+void IsotopeOutputScheme::TrackingActionPre(const G4Track *aTrack) {
   const auto particle = aTrack->GetParticleDefinition();
-  //if (!particle->IsGeneralIon()) return;
+  // if (!particle->IsGeneralIon()) return;
   const int z = particle->GetAtomicNumber();
   const int a = particle->GetAtomicMass();
-  if (z == 0 || a == 0) return; // not an isotope, but any other particle.
+  if (z == 0 || a == 0)
+    return; // not an isotope, but any other particle.
 
   G4String CreatorName = aTrack->GetCreatorProcess()->GetProcessName();
-  G4int id = G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetEventID(); 
-  
-  // In Theory there should always be only one capture per event. But the more general approach is to be able to store multiple
-  if(CreatorName == "RMGnCapture" || CreatorName == "nCapture"){
+  G4int id =
+      G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetEventID();
+
+  // In Theory there should always be only one capture per event. But the more
+  // general approach is to be able to store multiple
+  if (CreatorName == "RMGnCapture" || CreatorName == "nCapture") {
     zOfEvent.push_back(z);
     aOfEvent.push_back(a);
   }
-  
 }
 
 // invoked in RMGEventAction::EndOfEventAction()
-void IsotopeOutputScheme::StoreEvent(const G4Event* event) {
+void IsotopeOutputScheme::StoreEvent(const G4Event *event) {
   auto rmg_man = RMGManager::Instance();
   if (rmg_man->IsPersistencyEnabled()) {
     RMGLog::OutDev(RMGLog::debug, "Filling persistent data vectors");

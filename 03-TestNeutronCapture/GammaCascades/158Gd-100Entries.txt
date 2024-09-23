@@ -1,10 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%      listing of gamma cascades by MAURINA/GAMMOC
-%% 
-%%   GD157+N  KRK-D  3LO GAMMA-RAY STRENGTH (PAPER)            
+%%
+%%   GD157+N  KRK-D  3LO GAMMA-RAY STRENGTH (PAPER)
 %%                                      MATNUM:  15711
-%%   E_n= 5 keV 
-%% 
+%%   E_n= 5 keV
+%%
 %% date: 20221218 time: 180456.105/pgrabmayr
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%$$%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% En: neutron energy  [keV]
@@ -20,7 +20,7 @@
 %% variables:
 %% En/keV Ex/kev  M  Em/keV Eg1/keV Eg2/kev Eg3/kev etc.. EgM
 %% format   :
-%%  i6    i6 i3    i6    i6    i6    i6    i6    i6    i6    i6    i6  
+%%  i6    i6 i3    i6    i6    i6    i6    i6    i6    i6    i6    i6
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
      5  7941  4     0  1830  2292  3739    80
      5  7941  3     0  2443  5418    80

@@ -12,26 +12,26 @@
 class G4Event;
 class IsotopeOutputScheme : public RMGVOutputScheme {
 
-  public:
+public:
+  IsotopeOutputScheme();
 
-    IsotopeOutputScheme();
-    
-    void ClearBeforeEvent() override;
-    void AssignOutputNames(G4AnalysisManager* ana_man) override;
-    void StoreEvent(const G4Event*) override;
-    //bool ShouldDiscardEvent(const G4Event*) override;
-    //std::optional<bool> StackingActionNewStage(int) override;
-    //std::optional<G4ClassificationOfNewTrack> StackingActionClassify(const G4Track*, int) override;
+  void ClearBeforeEvent() override;
+  void AssignOutputNames(G4AnalysisManager *ana_man) override;
+  void StoreEvent(const G4Event *) override;
+  // bool ShouldDiscardEvent(const G4Event*) override;
+  // std::optional<bool> StackingActionNewStage(int) override;
+  // std::optional<G4ClassificationOfNewTrack> StackingActionClassify(const
+  // G4Track*, int) override;
 
-    void TrackingActionPre(const G4Track* aTrack) override;
+  void TrackingActionPre(const G4Track *aTrack) override;
 
-  private: 
-    // Make sure the ID will not end up being used by other detectors (should be unique)
-    G4int OutputRegisterID = 1000;
+private:
+  // Make sure the ID will not end up being used by other detectors (should be
+  // unique)
+  G4int OutputRegisterID = 1000;
 
-    std::vector<G4int> zOfEvent;
-    std::vector<G4int> aOfEvent;
-
+  std::vector<G4int> zOfEvent;
+  std::vector<G4int> aOfEvent;
 };
 
 #endif

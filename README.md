@@ -1,6 +1,6 @@
 # remage applications
 
-This repository is a collection of remage applications that are either meant for small tests or in early development untill they might be moved somewhere more official.
+This repository is a collection of remage applications that are either meant for small tests or in early development until they might be moved somewhere more official.
 
 
 

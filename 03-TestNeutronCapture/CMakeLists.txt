@@ -5,5 +5,6 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 find_package(remage)
 
-add_executable(TestNeutronCapture main.cc HPGeTestStand.hh HPGeTestStand.cc IsotopeOutputScheme.cc IsotopeOutputScheme.hh)
+add_executable(TestNeutronCapture main.cc HPGeTestStand.hh HPGeTestStand.cc
+                                  IsotopeOutputScheme.cc IsotopeOutputScheme.hh)
 target_link_libraries(TestNeutronCapture PUBLIC RMG::remage)

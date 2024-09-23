@@ -5,9 +5,8 @@
 
 class HardwareQEOverride : public RMGHardware {
 
-  public:
-
-    G4VPhysicalVolume* Construct() override;
+public:
+  G4VPhysicalVolume *Construct() override;
 };
 
 #endif
