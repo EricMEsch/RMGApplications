@@ -5,5 +5,7 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 find_package(remage REQUIRED COMPONENTS GDML)
 
-add_executable(FullCosmogenics main.cc HardwareQEOverride.hh HardwareQEOverride.cc)
+add_executable(
+  FullCosmogenics main.cc HardwareQEOverride.hh HardwareQEOverride.cc
+                  CustomIsotopeFilter.hh CustomIsotopeFilter.cc)
 target_link_libraries(FullCosmogenics PUBLIC RMG::remage)

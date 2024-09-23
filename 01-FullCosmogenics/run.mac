@@ -3,7 +3,7 @@
 #/tracking/verbose 1
 
 /RMG/Processes/OpticalPhysics true
-/RMG/Output/ActivateOutputScheme IsotopeFilter
+/RMG/Output/ActivateOutputScheme CustomIsotopeFilter
 /run/initialize
 
 #/process/optical/boundary/verbose 2
@@ -15,6 +15,6 @@
 /RMG/Generator/Confine UnConfined
 /RMG/Generator/Select MUSUNCosmicMuons
 
-/RMG/Generator/MUSUNCosmicMuons/SetMUSUNFile musun/MUSUN_100_events.csv
+/RMG/Generator/MUSUNCosmicMuons/SetMUSUNFile musun/combined_file.dat
 
-/run/beamOn 100
+/run/beamOn 1000
