@@ -4,7 +4,7 @@
 
 /RMG/Processes/HadronicPhysics Shielding
 #/RMG/Processes/OpticalPhysics true
-/RMG/Output/ActivateOutputScheme IsotopeFilter
+/RMG/Output/ActivateOutputScheme CustomIsotopeFilter
 /run/initialize
 
 #/process/optical/boundary/verbose 2
