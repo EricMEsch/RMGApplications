@@ -27,4 +27,6 @@
 /random/setDirectoryName random/
 /random/setSavingFlag 1
 
-/run/beamOn 100
+/random/resetEngineFromEachEvent true
+
+/run/beamOn 14

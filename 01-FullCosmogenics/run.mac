@@ -2,8 +2,9 @@
 
 #/tracking/verbose 1
 
-/RMG/Processes/OpticalPhysics true
-/RMG/Output/ActivateOutputScheme CustomIsotopeFilter
+/RMG/Processes/HadronicPhysics Shielding
+#/RMG/Processes/OpticalPhysics true
+/RMG/Output/ActivateOutputScheme IsotopeFilter
 /run/initialize
 
 #/process/optical/boundary/verbose 2
@@ -17,4 +18,6 @@
 
 /RMG/Generator/MUSUNCosmicMuons/SetMUSUNFile musun/combined_file.dat
 
-/run/beamOn 1000
+/random/setDirectoryName random/
+/random/setSavingFlag 1
+/run/beamOn 10000000

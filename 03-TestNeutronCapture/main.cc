@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
   else
     manager.SetInteractive(true);
 
-  manager.SetNumberOfThreads(1);
+  manager.SetNumberOfThreads(2);
   manager.Initialize();
   manager.Run();
 

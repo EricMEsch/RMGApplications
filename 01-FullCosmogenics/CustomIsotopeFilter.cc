@@ -17,28 +17,40 @@
 
 #include <set>
 
+#include "G4Electron.hh"
 #include "G4Event.hh"
 #include "G4EventManager.hh"
 #include "G4OpticalPhoton.hh"
-#include "G4Electron.hh"
 #include "G4Positron.hh"
+#include "G4RunManager.hh"
 
 #include "RMGLog.hh"
 
-
-std::optional<G4ClassificationOfNewTrack> CustomIsotopeFilter::
-    StackingActionClassify(const G4Track* aTrack, int stage) {
+std::optional<G4ClassificationOfNewTrack>
+CustomIsotopeFilter::StackingActionClassify(const G4Track *aTrack, int stage) {
   // we are only interested in stacking into stage 1 after stage 0 finished.
-  if (stage != 0) return std::nullopt;
+  if (stage != 0)
+    return std::nullopt;
 
-  // defer tracking of optical photons and charged particles in the optical medium (to reduce memory consumption).
-  if (aTrack->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition()) return fWaiting;
-  if(aTrack->GetParentID() < 1) return std::nullopt;
+  // defer tracking of optical photons and charged particles in the optical
+  // medium (to reduce memory consumption).
+  if (aTrack->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition())
+    return fWaiting;
+  if (aTrack->GetParentID() < 1)
+    return std::nullopt;
   const auto pv_name = aTrack->GetTouchableHandle()->GetVolume()->GetName();
   auto particle = aTrack->GetDefinition();
-  if(pv_name == "InnerWater_phys" && (particle == G4Electron::ElectronDefinition() || 
-    particle == G4Positron::PositronDefinition())) return fWaiting;
+  if (pv_name == "InnerWater_phys" &&
+      (particle == G4Electron::ElectronDefinition() ||
+       particle == G4Positron::PositronDefinition()))
+    return fWaiting;
   return std::nullopt;
+}
+
+void CustomIsotopeFilter::StoreEvent(const G4Event *event) {
+  // stores the random seed for this event to be reproducible
+  if (!ShouldDiscardEvent(event))
+    G4RunManager::GetRunManager()->rndmSaveThisEvent();
 }
 
 // vim: tabstop=2 shiftwidth=2 expandtab

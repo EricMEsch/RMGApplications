@@ -67,6 +67,8 @@ void IsotopeOutputScheme::StoreEvent(const G4Event *event) {
       ana_man->FillNtupleIColumn(ntupleid, col_id++, event->GetEventID());
       ana_man->FillNtupleIColumn(ntupleid, col_id++, zOfEvent[i]);
       ana_man->FillNtupleIColumn(ntupleid, col_id++, aOfEvent[i]);
+      if (zOfEvent[i] == 1 && aOfEvent[i] == 2)
+        G4RunManager::GetRunManager()->rndmSaveThisEvent();
 
       // NOTE: must be called here for hit-oriented output
       ana_man->AddNtupleRow(ntupleid);

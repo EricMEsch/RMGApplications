@@ -28,8 +28,10 @@
 class G4Event;
 class CustomIsotopeFilter : public RMGIsotopeFilterOutputScheme {
 
-  public:
-    std::optional<G4ClassificationOfNewTrack> StackingActionClassify(const G4Track*, int) override;
+public:
+  std::optional<G4ClassificationOfNewTrack>
+  StackingActionClassify(const G4Track *, int) override;
+  void StoreEvent(const G4Event *) override;
 };
 
 #endif

@@ -78,7 +78,7 @@ int main(int argc, char **argv) {
   // Outputfilename and Threads. Then run
   std::string outputfilename = "build/output.csv";
   manager.SetOutputFileName(outputfilename);
-  manager.SetNumberOfThreads(1);
+  manager.SetNumberOfThreads(16);
   manager.Initialize();
   manager.Run();
 
