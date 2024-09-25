@@ -1,0 +1,22 @@
+/RMG/Manager/Logging/LogLevel summary
+
+#/tracking/verbose 2
+
+/RMG/Processes/HadronicPhysics Shielding
+/RMG/Processes/Realm CosmicRays
+#/RMG/Processes/OpticalPhysics true
+/run/initialize
+
+#/process/optical/boundary/verbose 2
+
+/RMG/Output/Germanium/SetEdepCutLow 5
+/RMG/Output/Germanium/AddDetectorForEdepThreshold 10000
+/RMG/Output/NtuplePerDetector false
+
+/RMG/Generator/Confine UnConfined
+
+/RMG/Generator/Select MUSUNCosmicMuons
+/RMG/Generator/MUSUNCosmicMuons/SetMUSUNFile musun/combined_file.dat
+
+
+/run/beamOn 100000

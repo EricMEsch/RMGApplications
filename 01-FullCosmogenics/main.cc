@@ -2,13 +2,18 @@
 #include "RMGLog.hh"
 #include "RMGManager.hh"
 
+#include "CosmogenicPhysics.hh"
 #include "CustomIsotopeFilter.hh"
+#include "CustomMUSUNGenerator.hh"
 #include "HardwareQEOverride.hh"
+#include "RNGTrackingAction.hh"
 
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <string>
+
+#include "CLI11.hpp"
 
 // The names can also be hardcoded when following a strict name convention
 // But as the number of rows and columns can change in the future this is better
@@ -40,6 +45,18 @@ std::vector<std::string> getPMTNames(std::string filename) {
 }
 
 int main(int argc, char **argv) {
+  CLI::App app{"Cosmogenic Simulations"};
+  int nthreads = 16;
+  std::string macroName;
+  bool rngFlag = false;
+
+  app.add_option("-m,--macro", macroName,
+                 "<Geant4 macro filename> Default: None");
+  app.add_option("-t, --nthreads", nthreads,
+                 "<number of threads to use> Default: 16");
+  app.add_flag("-r,--rng", rngFlag, "Enable RNG restoration mode");
+
+  CLI11_PARSE(app, argc, argv);
 
   // RMGLog::SetLogLevel(RMGLog::debug);
 
@@ -49,6 +66,7 @@ int main(int argc, char **argv) {
   // Overwrite the standard Hardware with one that reads
   // in the PMT QE from datasheet
   manager.SetUserInit(new HardwareQEOverride());
+  // Overwrite RMGPhysics to use own Optical Processes
   manager.GetDetectorConstruction()->IncludeGDMLFile(filename);
 
   // Get the physical volume names of the PMTs to register them
@@ -64,14 +82,21 @@ int main(int argc, char **argv) {
   manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kGermanium,
                                                       "Ge_phys", id + 1000);
 
+  // Custom User init
   auto user_init = manager.GetUserInit();
-  user_init->AddOptionalOutputScheme<CustomIsotopeFilter>(
-      "CustomIsotopeFilter");
+  if (rngFlag) {
+    user_init->AddOptionalOutputScheme<CustomIsotopeFilter>(
+        "CustomIsotopeFilter");
+    user_init->AddTrackingAction<RNGTrackingAction>();
+    user_init->SetUserGenerator<CustomMUSUNGenerator>();
+    auto *RunManager = manager.GetG4RunManager();
+    RunManager->SetNumberOfThreads(16);
+    manager.SetUserInit(new CosmogenicPhysics());
+  }
 
   // Interactive or batch mode?
-  std::string macro = argc > 1 ? argv[1] : "";
-  if (!macro.empty())
-    manager.IncludeMacroFile(macro);
+  if (!macroName.empty())
+    manager.IncludeMacroFile(macroName);
   else
     manager.SetInteractive(true);
 

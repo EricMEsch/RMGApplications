@@ -1,7 +1,8 @@
 /RMG/Manager/Logging/LogLevel summary
 
-#/tracking/verbose 1
+#/tracking/verbose 2
 
+/RMG/Processes/OpticalPhysics true
 /RMG/Processes/HadronicPhysics Shielding
 /RMG/Processes/ThermalScattering 1
 /RMG/Processes/UseGrabmayrsGammaCascades true
@@ -18,15 +19,11 @@
 /RMG/Output/FileName build/Custom.csv
 
 /RMG/Generator/Select GPS
-/gps/particle neutron
+/gps/particle mu-
 /gps/ang/type iso
-/gps/energy 0.5 MeV
+/gps/energy 10 GeV
 
 #/RMG/Processes/Realm CosmicRays
 
-/random/setDirectoryName random/
-/random/setSavingFlag 1
 
-/random/resetEngineFromEachEvent true
-
-/run/beamOn 14
+/run/beamOn 1

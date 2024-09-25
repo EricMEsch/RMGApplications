@@ -63,6 +63,34 @@ G4VPhysicalVolume *HPGeTestStand::DefineGeometry() {
   Gdwater->AddMaterial(water, 1. - 0.002);
   Gdwater->AddMaterial(gadoliniumSulfate, 0.002);
 
+  // Set optical properties to test the rng change
+  // ooooooooooooooooooooooOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOoooooooooooooooooooo
+
+  std::vector<G4double> fenergySmall = {
+      1.239841939 * u::eV / 0.6,
+      1.239841939 * u::eV / 0.1}; // Convert energie from wavelength to eV
+  std::vector<G4double> energyAbs = {
+      1.239841939 * u::eV / 0.6,  1.239841939 * u::eV / 0.55,
+      1.239841939 * u::eV / 0.50, 1.239841939 * u::eV / 0.45,
+      1.239841939 * u::eV / 0.40, 1.239841939 * u::eV / 0.35,
+      1.239841939 * u::eV / 0.30, 1.239841939 * u::eV / 0.25,
+      1.239841939 * u::eV / 0.20, 1.239841939 * u::eV / 0.19,
+      1.239841939 * u::eV / 0.1};
+  std::vector<G4double> rindexWater = {1.33, 1.33};
+
+  std::vector<G4double> absH2O =
+      {
+          10 * u::m,  20 * u::m,     50 * u::m,     100 * u::m,
+          100 * u::m, 100 * u::m,    90 * u::m,     20 * u::m,
+          1 * u::m,   0.001 * u::mm, 0.0001 * u::mm // See
+                                                    // https://www.researchgate.net/publication/307856024_Ultraviolet_250-550_nm_absorption_spectrum_of_pure_water
+      };
+  G4MaterialPropertiesTable *mptH2O = new G4MaterialPropertiesTable();
+  mptH2O->AddProperty("RINDEX", fenergySmall, rindexWater);
+  mptH2O->AddProperty("ABSLENGTH", energyAbs, absH2O);
+  water->SetMaterialPropertiesTable(mptH2O);
+  Gdwater->SetMaterialPropertiesTable(mptH2O);
+
   // Place Volumes
   // ooooooooooooooooooooooOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOoooooooooooooooooooo
 
