@@ -1,23 +1,35 @@
 /RMG/Manager/Logging/LogLevel summary
 
-#/tracking/verbose 1
+#/tracking/verbose 2
 
 /RMG/Processes/HadronicPhysics Shielding
-#/RMG/Processes/OpticalPhysics true
-/RMG/Output/ActivateOutputScheme CustomIsotopeFilter
+/RMG/Processes/Realm CosmicRays
+/RMG/Processes/OpticalPhysics true
+/RMG/Output/ActivateOutputScheme IsotopeFilter
 /run/initialize
 
 #/process/optical/boundary/verbose 2
 
 /RMG/Output/IsotopeFilter/AddIsotope 77 32
-/RMG/Output/IsotopeFilter/DiscardPhotonsIfIsotopeNotProduced true
+#/RMG/Output/IsotopeFilter/DiscardPhotonsIfIsotopeNotProduced true
 /RMG/Output/NtuplePerDetector false
 
 /RMG/Generator/Confine UnConfined
-/RMG/Generator/Select MUSUNCosmicMuons
 
+/RMG/Generator/Select MUSUNCosmicMuons
 /RMG/Generator/MUSUNCosmicMuons/SetMUSUNFile musun/combined_file.dat
 
-/random/setDirectoryName random/
-/random/setSavingFlag 1
-/run/beamOn 10000000
+#/RMG/Generator/Select CustomMUSUN
+#/Cosmogenics/Generator/SetMUSUNFile musun/combined_file.dat
+
+#/RMG/Generator/Select GPS
+#/gps/particle mu-
+#/gps/direction -0.077055 -0.874746 -0.478416
+#/gps/position 38.0   800.0   225.8 cm
+#/gps/energy 549.4 GeV
+
+#/RMG/Generator/Select CosmicMuons
+#/RMG/Generator/CosmicMuons/SkyShape Plane
+#/RMG/Generator/CosmicMuons/SkyPlaneHeight 10
+
+/run/beamOn 1000000

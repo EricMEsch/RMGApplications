@@ -24,7 +24,4 @@
 
 #/RMG/Processes/Realm CosmicRays
 
-/random/setDirectoryName random/
-/random/setSavingFlag 1
-
 /run/beamOn 100
