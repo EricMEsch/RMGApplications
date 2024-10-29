@@ -2,12 +2,17 @@
 
 # Make sure the directories exist to avoid undefined behaviour
 if [[ ! -d "random" ]]; then
-    echo "Error: /random directory not found."
+    echo "Error: 'random/' directory not found."
+    exit 1
+fi
+
+if [[ ! -d "temp" ]]; then
+    echo "Error: 'temp/' directory not found."
     exit 1
 fi
 
 if [[ ! -d "musun" ]]; then
-    echo "Error: /musun directory not found."
+    echo "Error: 'musun/' directory not found."
     exit 1
 fi
 

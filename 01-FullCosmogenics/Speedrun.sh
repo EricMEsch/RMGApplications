@@ -1,13 +1,23 @@
 #!/bin/bash
 
 # Make sure the directories exist to avoid undefined behaviour
-if [[ ! -d "random" ]]; then
-    echo "Error: /random directory not found."
-    exit 1
+if [[ -e "random" && ! -d "random" ]]; then
+    echo "Error: 'random' exists but is not a directory."
+elif [[ ! -d "random" ]]; then
+    echo "Warning: 'random/' directory not found. Creating 'random/' directory."
+    mkdir random
 fi
 
+if [[ -e "temp" && ! -d "temp" ]]; then
+    echo "Error: 'temp' exists but is not a directory."
+elif [[ ! -d "temp" ]]; then
+    echo "Warning: 'temp/' directory not found. Creating 'temp/' directory."
+    mkdir temp
+fi
+
+# This directory has to provide the muons!
 if [[ ! -d "musun" ]]; then
-    echo "Error: /musun directory not found."
+    echo "Error: 'musun/' directory not found. Where are your primaries comming from?"
     exit 1
 fi
 
