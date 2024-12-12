@@ -26,7 +26,7 @@ rm -rf temp/*
 rm -rf random/*
 
 # Run simulation without Optical properties
-./build/FullCosmogenics -m rerun.mac -r
+./build/FullCosmogenics -m rerun.mac -r 1
 
 # Step 0: Prepare new musun input file to filter only the events of interest
 output_files="temp/output_nt_musun_t*.csv"
@@ -104,7 +104,7 @@ echo "/random/resetEngineFromEachEvent true" >> RestoreSeedRun.mac
 echo "/run/beamOn $count" >> RestoreSeedRun.mac
 
 # Step 3: Start simulation with optical processes now!
-./build/FullCosmogenics -m RestoreSeedRun.mac -r
+./build/FullCosmogenics -m RestoreSeedRun.mac -r 2
 
 # Step 4: Delete copied files to clean the working directory
 # Leave RestoreSeedRun.mac to be able to check it for issues later

@@ -15,7 +15,8 @@ add_executable(
   src/CustomMUSUNGenerator.cc
   src/CosmogenicPhysics.cc
   src/RNGCerenkov.cc
-  src/RNGTrackingAction.cc)
+  src/RNGTrackingAction.cc
+  src/CosmogenicOutputScheme.cc)
 
 target_link_libraries(FullCosmogenics PUBLIC RMG::remage)
 

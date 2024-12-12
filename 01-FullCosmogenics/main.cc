@@ -7,6 +7,7 @@
 #include "CustomMUSUNGenerator.hh"
 #include "HardwareQEOverride.hh"
 #include "RNGTrackingAction.hh"
+#include "CosmogenicOutputScheme.hh"
 
 #include <fstream>
 #include <iostream>
@@ -48,19 +49,23 @@ int main(int argc, char **argv) {
   CLI::App app{"Cosmogenic Simulations"};
   int nthreads = 16;
   std::string macroName;
-  bool rngFlag = false;
+  int rngFlag = 0;
+  bool useCosmogenicOutputScheme = false;
 
   app.add_option("-m,--macro", macroName,
                  "<Geant4 macro filename> Default: None");
   app.add_option("-t, --nthreads", nthreads,
                  "<number of threads to use> Default: 16");
-  app.add_flag("-r,--rng", rngFlag, "Enable RNG restoration mode");
+  app.add_option("-r,--rng", rngFlag, "RNG restoration mode: 0 deactivated, 1 for prerun, 2 for restoration run");
+  app.add_flag("-c,--cosmogenic", useCosmogenicOutputScheme, "Use CosmogenicOutputScheme");
 
   CLI11_PARSE(app, argc, argv);
 
   // RMGLog::SetLogLevel(RMGLog::debug);
 
   std::string filename = "gdml/WLGDOptical.gdml";
+
+  std::string outputfilename = "build/output.hdf5";
 
   RMGManager manager("FullCosmogenics", argc, argv);
   // Overwrite the standard Hardware with one that reads
@@ -74,17 +79,17 @@ int main(int argc, char **argv) {
   int id = 0;
   // Register all of the PMTs
   for (const auto &name : PMTnames) {
-    manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kOptical,
+    manager.GetDetectorConstruction()->RegisterDetector(kOptical,
                                                         name, id);
     id++;
   }
   // Register the germanium volume as germanium detector.
-  manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kGermanium,
+  manager.GetDetectorConstruction()->RegisterDetector(kGermanium,
                                                       "Ge_phys", id + 1000);
 
   // Custom User init
   auto user_init = manager.GetUserInit();
-  if (rngFlag) {
+  if (rngFlag != 0) {
     user_init->AddOptionalOutputScheme<CustomIsotopeFilter>(
         "CustomIsotopeFilter");
     user_init->AddTrackingAction<RNGTrackingAction>();
@@ -92,6 +97,14 @@ int main(int argc, char **argv) {
     auto *RunManager = manager.GetG4RunManager();
     RunManager->SetNumberOfThreads(16);
     manager.SetUserInit(new CosmogenicPhysics());
+    if(rngFlag == 1)
+      outputfilename = "build/output.csv";
+    else
+      outputfilename = "build/RestoredOutput.hdf5";
+  }
+
+  if (useCosmogenicOutputScheme) {
+    user_init->AddOptionalOutputScheme<CosmogenicOutputScheme>("CosmogenicOutputScheme");
   }
 
   // Interactive or batch mode?
@@ -101,7 +114,7 @@ int main(int argc, char **argv) {
     manager.SetInteractive(true);
 
   // Outputfilename and Threads. Then run
-  std::string outputfilename = "build/output.csv";
+  
   manager.SetOutputFileName(outputfilename);
   manager.SetNumberOfThreads(16);
   manager.Initialize();
@@ -109,3 +122,4 @@ int main(int argc, char **argv) {
 
   return 0;
 }
+// vim: tabstop=2 shiftwidth=2 expandtab

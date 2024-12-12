@@ -80,6 +80,7 @@ sed -i '/^\/run\/beamOn/d' RestoreSeedRun.mac
 sed -i '/^\/random\/setDirectoryName/d' RestoreSeedRun.mac
 sed -i '/^\/random\/setSavingFlag/d' RestoreSeedRun.mac
 sed -i 's|^/RMG/Output/ActivateOutputScheme CustomIsotopeFilter|/RMG/Output/ActivateOutputScheme IsotopeFilter|' RestoreSeedRun.mac
+sed -i '/^\/RMG\/Output\/ActivateOutputScheme IsotopeFilter/a /RMG/Output/ActivateOutputScheme CosmogenicOutputScheme' RestoreSeedRun.mac
 # Uncomment the optical processes
 sed -i 's|^#\(/RMG/Processes/OpticalPhysics true\)|\1|' RestoreSeedRun.mac
 
@@ -88,7 +89,7 @@ echo "/random/resetEngineFromEachEvent true" >> RestoreSeedRun.mac
 echo "/run/beamOn $count" >> RestoreSeedRun.mac
 
 # Step 3: Start simulation
-./build/FullCosmogenics -m RestoreSeedRun.mac -r
+./build/FullCosmogenics -m RestoreSeedRun.mac -r 2 -c
 
 # Step 4: Delete copied files to clean the working directory
 # Leave RestoreSeedRun.mac to be able to check it for issues later
