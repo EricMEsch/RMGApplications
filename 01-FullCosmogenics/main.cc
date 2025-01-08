@@ -79,12 +79,12 @@ int main(int argc, char **argv) {
   int id = 0;
   // Register all of the PMTs
   for (const auto &name : PMTnames) {
-    manager.GetDetectorConstruction()->RegisterDetector(kOptical,
+    manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kOptical,
                                                         name, id);
     id++;
   }
   // Register the germanium volume as germanium detector.
-  manager.GetDetectorConstruction()->RegisterDetector(kGermanium,
+  manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kGermanium,
                                                       "Ge_phys", id + 1000);
 
   // Custom User init
