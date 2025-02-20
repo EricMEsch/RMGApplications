@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Make sure the directories exist to avoid undefined behaviour
 if [[ -e "random" && ! -d "random" ]]; then
     echo "Error: 'random' exists but is not a directory."
