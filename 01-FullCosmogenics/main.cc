@@ -63,15 +63,16 @@ int main(int argc, char **argv) {
 
   // RMGLog::SetLogLevel(RMGLog::debug);
 
-  std::string filename = "gdml/WLGDOptical.gdml";
+  std::string filename = "gdml/L1000V0.gdml";
 
-  std::string outputfilename = "build/output.hdf5";
+  std::string outputfilename = "build/output.csv";
 
   RMGManager manager("FullCosmogenics", argc, argv);
   // Overwrite the standard Hardware with one that reads
   // in the PMT QE from datasheet
   manager.SetUserInit(new HardwareQEOverride());
   // Overwrite RMGPhysics to use own Optical Processes
+  std::cout << "current gdml file: " << filename << std::endl;
   manager.GetDetectorConstruction()->IncludeGDMLFile(filename);
 
   // Get the physical volume names of the PMTs to register them
@@ -79,12 +80,12 @@ int main(int argc, char **argv) {
   int id = 0;
   // Register all of the PMTs
   for (const auto &name : PMTnames) {
-    manager.GetDetectorConstruction()->RegisterDetector(kOptical,
+    manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kOptical,
                                                         name, id);
     id++;
   }
   // Register the germanium volume as germanium detector.
-  manager.GetDetectorConstruction()->RegisterDetector(kGermanium,
+  manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kGermanium,
                                                       "Ge_phys", id + 1000);
 
   // Custom User init
