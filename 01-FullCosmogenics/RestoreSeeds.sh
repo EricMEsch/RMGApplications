@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -e
 
 # Make sure the directories exist to avoid undefined behaviour
 if [[ ! -d "random" ]]; then
@@ -92,6 +91,12 @@ echo "/run/beamOn $count" >> RestoreSeedRun.mac
 
 # Step 3: Start simulation
 ./build/FullCosmogenics -m RestoreSeedRun.mac -r 2 -c
+
+# Check if the simulation was successful
+if [[ $? -ne 0 ]]; then
+    echo "FullCosmogenics was killed or failed!" >&2
+    exit 1
+fi
 
 # Step 4: Delete copied files to clean the working directory
 # Leave RestoreSeedRun.mac to be able to check it for issues later

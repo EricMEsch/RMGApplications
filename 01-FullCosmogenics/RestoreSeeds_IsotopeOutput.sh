@@ -1,49 +1,28 @@
 #!/bin/bash
 
+
 # Make sure the directories exist to avoid undefined behaviour
-if [[ -e "random" && ! -d "random" ]]; then
-    echo "Error: 'random' exists but is not a directory."
-elif [[ ! -d "random" ]]; then
-    echo "Warning: 'random/' directory not found. Creating 'random/' directory."
-    mkdir random
-fi
-
-if [[ -e "temp" && ! -d "temp" ]]; then
-    echo "Error: 'temp' exists but is not a directory."
-elif [[ ! -d "temp" ]]; then
-    echo "Warning: 'temp/' directory not found. Creating 'temp/' directory."
-    mkdir temp
-fi
-
-# This directory has to provide the muons!
-if [[ ! -d "musun" ]]; then
-    echo "Error: 'musun/' directory not found. Where are your primaries comming from?"
+if [[ ! -d "random" ]]; then
+    echo "Error: 'random/' directory not found."
     exit 1
 fi
 
-# Clear temporary folders
-rm -rf temp/*
-rm -rf random/*
+if [[ ! -d "temp" ]]; then
+    echo "Error: 'temp/' directory not found."
+    exit 1
+fi
 
-# Run simulation without Optical properties
-./build/FullCosmogenics -m rerun.mac -r 1
-
-# Check if the simulation was successful
-if [[ $? -ne 0 ]]; then
-    echo "FullCosmogenics was killed or failed!" >&2
+if [[ ! -d "musun" ]]; then
+    echo "Error: 'musun/' directory not found."
     exit 1
 fi
 
 # Step 0: Prepare new musun input file to filter only the events of interest
 output_files="temp/output_nt_musun_t*.csv"
-input_files="build/output_nt_musun_t*.csv"
 temp_file="musun/temp_musun.dat"
 concatenated_file="musun/all_output_nt_musun.csv"
 
-# Move the musun input files to the temp folder for future use. Otherwise they could be overwritten later
-mv $input_files temp/
 
-# Clear temporary files
 > "$temp_file"
 > "$concatenated_file"
 
@@ -101,7 +80,12 @@ sed -i "s|^/RMG/Generator/MUSUNCosmicMuons/SetMUSUNFile.*|/Cosmogenics/Generator
 sed -i '/^\/run\/beamOn/d' RestoreSeedRun.mac
 sed -i '/^\/random\/setDirectoryName/d' RestoreSeedRun.mac
 sed -i '/^\/random\/setSavingFlag/d' RestoreSeedRun.mac
+# Change the output scheme from CustomIsotopeFilter to IsotopeFilter
 sed -i 's|^/RMG/Output/ActivateOutputScheme CustomIsotopeFilter|/RMG/Output/ActivateOutputScheme IsotopeFilter|' RestoreSeedRun.mac
+# Add CosmogenicOutputScheme after IsotopeFilter
+sed -i '/^\/RMG\/Output\/ActivateOutputScheme IsotopeFilter/a /RMG/Output/ActivateOutputScheme CosmogenicOutputScheme' RestoreSeedRun.mac
+# Add IsotopeOutputScheme after IsotopeFilter
+sed -i '/^\/RMG\/Output\/ActivateOutputScheme IsotopeFilter/a /RMG/Output/ActivateOutputScheme IsotopeOutputScheme' RestoreSeedRun.mac
 # Uncomment the optical processes
 sed -i 's|^#\(/RMG/Processes/OpticalPhysics true\)|\1|' RestoreSeedRun.mac
 
@@ -109,8 +93,9 @@ sed -i 's|^#\(/RMG/Processes/OpticalPhysics true\)|\1|' RestoreSeedRun.mac
 echo "/random/resetEngineFromEachEvent true" >> RestoreSeedRun.mac
 echo "/run/beamOn $count" >> RestoreSeedRun.mac
 
-# Step 3: Start simulation with optical processes now!
-./build/FullCosmogenics -m RestoreSeedRun.mac -r 2
+# Step 3: Start simulation
+./build/FullCosmogenics -m RestoreSeedRun.mac -r 2 -c
+
 # Check if the simulation was successful
 if [[ $? -ne 0 ]]; then
     echo "FullCosmogenics was killed or failed!" >&2

@@ -8,6 +8,7 @@
 #include "HardwareQEOverride.hh"
 #include "RNGTrackingAction.hh"
 #include "CosmogenicOutputScheme.hh"
+#include "IsotopeOutputScheme.hh"
 
 #include <fstream>
 #include <iostream>
@@ -63,9 +64,9 @@ int main(int argc, char **argv) {
 
   // RMGLog::SetLogLevel(RMGLog::debug);
 
-  std::string filename = "gdml/L1000V0.gdml";
+  std::string filename = "gdml/L1000_NM_40_dist.gdml";
 
-  std::string outputfilename = "build/output.csv";
+  std::string outputfilename = "build/RestoredOutput.hdf5";
 
   RMGManager manager("FullCosmogenics", argc, argv);
   // Overwrite the standard Hardware with one that reads
@@ -82,6 +83,7 @@ int main(int argc, char **argv) {
   for (const auto &name : PMTnames) {
     manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kOptical,
                                                         name, id);
+    std::cout << "Name: " << name << " UID: " << id << std::endl;
     id++;
   }
   // Register the germanium volume as germanium detector.
@@ -107,6 +109,15 @@ int main(int argc, char **argv) {
   if (useCosmogenicOutputScheme) {
     user_init->AddOptionalOutputScheme<CosmogenicOutputScheme>("CosmogenicOutputScheme");
   }
+
+  user_init->AddOptionalOutputScheme<IsotopeOutputScheme>(
+    "IsotopeOutputScheme");
+
+  //
+  //manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kGermanium,
+  //    "InnerWater_phys", id + 2000);
+  //manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kGermanium,
+  //      "PMMA_phys", id + 3000);
 
   // Interactive or batch mode?
   if (!macroName.empty())

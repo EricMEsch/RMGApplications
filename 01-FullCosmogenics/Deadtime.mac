@@ -9,18 +9,14 @@
 /RMG/GrabmayrGammaCascades/SetGammaCascadeFile 64 155 gammacascades/156Gd-5keV-cascades.dat
 /RMG/GrabmayrGammaCascades/SetGammaCascadeFile 64 157 gammacascades/158Gd-5keV-cascades.dat
 
-#/RMG/Processes/OpticalPhysics true
-/RMG/Output/ActivateOutputScheme CustomIsotopeFilter
+/RMG/Processes/OpticalPhysics true
+/RMG/Output/ActivateOutputScheme IsotopeOutputScheme
 /run/initialize
 
-/RMG/Output/IsotopeFilter/AddIsotope 77 32
 /RMG/Output/NtuplePerDetector false
-
 /RMG/Generator/Confine UnConfined
 
 /RMG/Generator/Select MUSUNCosmicMuons
 /RMG/Generator/MUSUNCosmicMuons/SetMUSUNFile musun/combined_file.dat
 
-/random/setDirectoryName random/
-/random/setSavingFlag 1
-/run/beamOn 10000000
+/run/beamOn 100000
