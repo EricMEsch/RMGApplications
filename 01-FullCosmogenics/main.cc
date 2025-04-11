@@ -52,9 +52,12 @@ int main(int argc, char **argv) {
   std::string macroName;
   int rngFlag = 0;
   bool useCosmogenicOutputScheme = false;
+  std::string filename;
 
   app.add_option("-m,--macro", macroName,
                  "<Geant4 macro filename> Default: None");
+  app.add_option("-g,--gdml", filename,
+                  "<GDML filename> Default: None");
   app.add_option("-t, --nthreads", nthreads,
                  "<number of threads to use> Default: 16");
   app.add_option("-r,--rng", rngFlag, "RNG restoration mode: 0 deactivated, 1 for prerun, 2 for restoration run");
@@ -63,8 +66,6 @@ int main(int argc, char **argv) {
   CLI11_PARSE(app, argc, argv);
 
   // RMGLog::SetLogLevel(RMGLog::debug);
-
-  std::string filename = "gdml/L1000_NM_40_dist.gdml";
 
   std::string outputfilename = "build/RestoredOutput.hdf5";
 
@@ -128,7 +129,7 @@ int main(int argc, char **argv) {
   // Outputfilename and Threads. Then run
   
   manager.SetOutputFileName(outputfilename);
-  manager.SetNumberOfThreads(16);
+  manager.SetNumberOfThreads(nthreads);
   manager.Initialize();
   manager.Run();
 

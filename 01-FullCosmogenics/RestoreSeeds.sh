@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Make sure the directories exist to avoid undefined behaviour
 if [[ ! -d "random" ]]; then
     echo "Error: 'random/' directory not found."
@@ -90,7 +89,9 @@ echo "/random/resetEngineFromEachEvent true" >> RestoreSeedRun.mac
 echo "/run/beamOn $count" >> RestoreSeedRun.mac
 
 # Step 3: Start simulation
-./build/FullCosmogenics -m RestoreSeedRun.mac -r 2 -c
+./build/FullCosmogenics -m RestoreSeedRun.mac -r 2 -c "$@"
+
+
 
 # Check if the simulation was successful
 if [[ $? -ne 0 ]]; then
