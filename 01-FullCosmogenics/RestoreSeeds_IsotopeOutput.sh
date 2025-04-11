@@ -19,8 +19,8 @@ fi
 
 # Step 0: Prepare new musun input file to filter only the events of interest
 output_files="temp/output_nt_musun_t*.csv"
-temp_file="musun/temp_musun.dat"
-concatenated_file="musun/all_output_nt_musun.csv"
+temp_file="temp/temp_musun.dat"
+concatenated_file="temp/all_output_nt_musun.csv"
 
 
 > "$temp_file"
