@@ -1,0 +1,14 @@
+/run/initialize
+
+# create a scene
+/vis/open OGL
+/vis/scene/create
+/vis/sceneHandler/attach
+
+# draw the geometry
+/vis/drawVolume
+
+# and also show trajectories and particle hits
+/vis/scene/add/trajectories smooth
+/vis/scene/add/hits
+/vis/scene/endOfEventAction accumulate

@@ -1,0 +1,4 @@
+/run/initialize
+/control/execute gun.mac
+
+/run/beamOn 10000000
