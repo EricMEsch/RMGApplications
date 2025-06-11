@@ -16,7 +16,6 @@ add_executable(
   src/CosmogenicPhysics.cc
   src/RNGCerenkov.cc
   src/RNGTrackingAction.cc
-  src/CosmogenicOutputScheme.cc
   src/IsotopeOutputScheme.cc)
 
 target_link_libraries(FullCosmogenics PUBLIC RMG::remage)

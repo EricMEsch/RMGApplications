@@ -23,10 +23,10 @@
 #include "G4GenericMessenger.hh"
 #include "G4VUserEventInformation.hh"
 
-#include "RMGIsotopeFilterOutputScheme.hh"
+#include "RMGIsotopeFilterScheme.hh"
 
 class G4Event;
-class CustomIsotopeFilter : public RMGIsotopeFilterOutputScheme {
+class CustomIsotopeFilter : public RMGIsotopeFilterScheme {
 
 public:
   void AssignOutputNames(G4AnalysisManager *ana_man) override;

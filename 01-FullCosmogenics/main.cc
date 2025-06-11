@@ -1,5 +1,4 @@
 #include "RMGHardware.hh"
-#include "RMGLog.hh"
 #include "RMGManager.hh"
 
 #include "CosmogenicPhysics.hh"
@@ -7,7 +6,6 @@
 #include "CustomMUSUNGenerator.hh"
 #include "HardwareQEOverride.hh"
 #include "RNGTrackingAction.hh"
-#include "CosmogenicOutputScheme.hh"
 #include "IsotopeOutputScheme.hh"
 
 #include <fstream>
@@ -51,7 +49,6 @@ int main(int argc, char **argv) {
   int nthreads = 16;
   std::string macroName;
   int rngFlag = 0;
-  bool useCosmogenicOutputScheme = false;
   std::string filename;
 
   app.add_option("-m,--macro", macroName,
@@ -61,11 +58,9 @@ int main(int argc, char **argv) {
   app.add_option("-t, --nthreads", nthreads,
                  "<number of threads to use> Default: 16");
   app.add_option("-r,--rng", rngFlag, "RNG restoration mode: 0 deactivated, 1 for prerun, 2 for restoration run");
-  app.add_flag("-c,--cosmogenic", useCosmogenicOutputScheme, "Use CosmogenicOutputScheme");
 
   CLI11_PARSE(app, argc, argv);
 
-  // RMGLog::SetLogLevel(RMGLog::debug);
 
   std::string outputfilename = "build/RestoredOutput.hdf5";
 
@@ -82,13 +77,13 @@ int main(int argc, char **argv) {
   int id = 0;
   // Register all of the PMTs
   for (const auto &name : PMTnames) {
-    manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kOptical,
+    manager.GetDetectorConstruction()->RegisterDetector(kOptical,
                                                         name, id);
     std::cout << "Name: " << name << " UID: " << id << std::endl;
     id++;
   }
   // Register the germanium volume as germanium detector.
-  manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kGermanium,
+  manager.GetDetectorConstruction()->RegisterDetector(kGermanium,
                                                       "Ge_phys", id + 1000);
 
   // Custom User init
@@ -107,18 +102,8 @@ int main(int argc, char **argv) {
       outputfilename = "build/RestoredOutput.hdf5";
   }
 
-  if (useCosmogenicOutputScheme) {
-    user_init->AddOptionalOutputScheme<CosmogenicOutputScheme>("CosmogenicOutputScheme");
-  }
-
   user_init->AddOptionalOutputScheme<IsotopeOutputScheme>(
     "IsotopeOutputScheme");
-
-  //
-  //manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kGermanium,
-  //    "InnerWater_phys", id + 2000);
-  //manager.GetDetectorConstruction()->RegisterDetector(RMGHardware::kGermanium,
-  //      "PMMA_phys", id + 3000);
 
   // Interactive or batch mode?
   if (!macroName.empty())
@@ -130,6 +115,7 @@ int main(int argc, char **argv) {
   
   manager.SetOutputFileName(outputfilename);
   manager.SetNumberOfThreads(nthreads);
+  manager.SetOutputOverwriteFiles(true);
   manager.Initialize();
   manager.Run();
 

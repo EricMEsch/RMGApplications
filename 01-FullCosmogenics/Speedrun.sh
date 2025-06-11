@@ -96,7 +96,7 @@ cp rerun.mac RestoreSeedRun.mac
 
 # Set the newly generated (temporary) musun file as input file
 sed -i "s|^/RMG/Generator/Select.*|/RMG/Generator/Select UserDefined|" RestoreSeedRun.mac
-sed -i "s|^/RMG/Generator/MUSUNCosmicMuons/SetMUSUNFile.*|/Cosmogenics/Generator/SetMUSUNFile $temp_file|" RestoreSeedRun.mac
+sed -i "s|^/RMG/Generator/MUSUNCosmicMuons/MUSUNFile.*|/Cosmogenics/Generator/SetMUSUNFile $temp_file|" RestoreSeedRun.mac
 # Remove the lines of RestoreSeedRun.mac that we want different
 sed -i '/^\/run\/beamOn/d' RestoreSeedRun.mac
 sed -i '/^\/random\/setDirectoryName/d' RestoreSeedRun.mac

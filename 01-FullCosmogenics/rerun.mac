@@ -3,7 +3,6 @@
 #/tracking/verbose 2
 
 /RMG/Processes/HadronicPhysics Shielding
-/RMG/Processes/Realm CosmicRays
 /RMG/Processes/UseGrabmayrsGammaCascades true
 
 /RMG/GrabmayrGammaCascades/SetGammaCascadeFile 64 155 gammacascades/156Gd-5keV-cascades.dat
@@ -19,7 +18,7 @@
 /RMG/Generator/Confine UnConfined
 
 /RMG/Generator/Select MUSUNCosmicMuons
-/RMG/Generator/MUSUNCosmicMuons/SetMUSUNFile musun/combined_file.dat
+/RMG/Generator/MUSUNCosmicMuons/MUSUNFile musun/combined_file.dat
 
 /random/setDirectoryName random/
 /random/setSavingFlag 1

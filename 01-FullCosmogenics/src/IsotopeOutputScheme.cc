@@ -48,8 +48,6 @@ void IsotopeOutputScheme::TrackingActionPre(const G4Track *aTrack) {
       G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetEventID();
 
   
-  // In Theory there should always be only one capture per event. But the more
-  // general approach is to be able to store multiple
   if (CreatorName == "RMGnCapture" || CreatorName == "nCapture") {
     zOfEvent.push_back(z);
     aOfEvent.push_back(a);
