@@ -1,6 +1,6 @@
 /RMG/Manager/Logging/LogLevel summary
 
-#/tracking/verbose 2
+/tracking/verbose 2
 
 /RMG/Processes/HadronicPhysics Shielding
 /RMG/Processes/Realm CosmicRays
@@ -10,15 +10,18 @@
 /RMG/GrabmayrGammaCascades/SetGammaCascadeFile 64 157 gammacascades/158Gd-5keV-cascades.dat
 
 /RMG/Processes/OpticalPhysics true
-/RMG/Output/ActivateOutputScheme IsotopeOutputScheme
+#/RMG/Output/ActivateOutputScheme IsotopeOutputScheme
 /run/initialize
 
-/process/inactivate Scintillation
+/process/optical/boundary/verbose 2
 
 /RMG/Output/NtuplePerDetector false
 /RMG/Generator/Confine UnConfined
 
-/RMG/Generator/Select MUSUNCosmicMuons
-/RMG/Generator/MUSUNCosmicMuons/SetMUSUNFile musun/combined_file.dat
+/RMG/Generator/Select GPS
+/gps/particle opticalphoton
+/gps/energy 3 eV
+/gps/position 3900 0 0 mm
+/gps/ang/type iso
 
-/run/beamOn 50000
+/run/beamOn 100000

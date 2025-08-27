@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
     user_init->AddTrackingAction<RNGTrackingAction>();
     user_init->SetUserGenerator<CustomMUSUNGenerator>();
     auto *RunManager = manager.GetG4RunManager();
-    RunManager->SetNumberOfThreads(16);
+    RunManager->SetNumberOfThreads(nthreads);
     manager.SetUserInit(new CosmogenicPhysics());
     if(rngFlag == 1)
       outputfilename = "build/output.csv";

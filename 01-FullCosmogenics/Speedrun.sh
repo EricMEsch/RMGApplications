@@ -110,12 +110,12 @@ echo "/random/resetEngineFromEachEvent true" >> RestoreSeedRun.mac
 echo "/run/beamOn $count" >> RestoreSeedRun.mac
 
 # Step 3: Start simulation with optical processes now!
-./build/FullCosmogenics -m RestoreSeedRun.mac -r 2 "$@"
+#./build/FullCosmogenics -m RestoreSeedRun.mac -r 2 "$@"
 # Check if the simulation was successful
-if [[ $? -ne 0 ]]; then
-    echo "FullCosmogenics was killed or failed!" >&2
-    exit 1
-fi
+#if [[ $? -ne 0 ]]; then
+#    echo "FullCosmogenics was killed or failed!" >&2
+#    exit 1
+#fi
 
 # Step 4: Delete copied files to clean the working directory
 # Leave RestoreSeedRun.mac to be able to check it for issues later
