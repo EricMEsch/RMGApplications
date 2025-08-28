@@ -83,8 +83,8 @@ int main(int argc, char **argv) {
     id++;
   }
   // Register the germanium volume as germanium detector.
-  manager.GetDetectorConstruction()->RegisterDetector(kGermanium,
-                                                      "Ge_phys", id + 1000);
+  //manager.GetDetectorConstruction()->RegisterDetector(kGermanium,
+  //                                                    "Ge_phys", id + 1000);
 
   // Custom User init
   auto user_init = manager.GetUserInit();
@@ -113,9 +113,9 @@ int main(int argc, char **argv) {
 
   // Outputfilename and Threads. Then run
   
-  manager.SetOutputFileName(outputfilename);
+  manager.GetOutputManager()->SetOutputFileName(outputfilename);
   manager.SetNumberOfThreads(nthreads);
-  manager.SetOutputOverwriteFiles(true);
+  manager.GetOutputManager()->SetOutputOverwriteFiles(true);
   manager.Initialize();
   manager.Run();
 

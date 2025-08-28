@@ -25,14 +25,14 @@
 #include "G4RunManager.hh"
 
 #include "RMGLog.hh"
-#include "RMGManager.hh"
+#include "RMGOutputManager.hh"
 
 namespace u = CLHEP;
 
 void CustomIsotopeFilter::AssignOutputNames(G4AnalysisManager *ana_man) {
 
-  auto vid = RMGManager::Instance()->RegisterNtuple(
-      -10, ana_man->CreateNtuple("musun", "Primary vertex data"));
+  auto vid = RMGOutputManager::Instance()->RegisterNtuple(
+      -10, ana_man->CreateNtuple("musun", "Primary vertex data"), "CustomIsotopeFilter");
 
   ana_man->CreateNtupleIColumn(vid, "evtid");
   ana_man->CreateNtupleIColumn(vid, "type");
@@ -54,7 +54,7 @@ void CustomIsotopeFilter::StoreEvent(const G4Event *event) {
   // stores the random seed for this event to be reproducible
   G4RunManager::GetRunManager()->rndmSaveThisEvent();
 
-  auto rmg_man = RMGManager::Instance();
+  auto rmg_man = RMGOutputManager::Instance();
   const auto ana_man = G4AnalysisManager::Instance();
   auto vntupleid = rmg_man->GetNtupleID(-10);
 

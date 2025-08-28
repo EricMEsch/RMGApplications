@@ -6,7 +6,7 @@
 #include "G4EventManager.hh"
 
 #include "RMGLog.hh"
-#include "RMGManager.hh"
+#include "RMGOutputManager.hh"
 
 namespace u = CLHEP;
 
@@ -21,10 +21,10 @@ void IsotopeOutputScheme::ClearBeforeEvent() {
 // invoked in RMGRunAction::SetupAnalysisManager()
 void IsotopeOutputScheme::AssignOutputNames(G4AnalysisManager *ana_man) {
 
-  auto rmg_man = RMGManager::Instance();
+  auto rmg_man = RMGOutputManager::Instance();
 
   auto id = rmg_man->RegisterNtuple(
-      OutputRegisterID, ana_man->CreateNtuple("IsotopeOutput", "Event data"));
+      OutputRegisterID, ana_man->CreateNtuple("IsotopeOutput", "Event data"), "IsotopeOutput");
 
   ana_man->CreateNtupleIColumn(id, "evtid");
   // Could be done with particle PDG but this way it is human readable
@@ -69,7 +69,7 @@ void IsotopeOutputScheme::TrackingActionPre(const G4Track *aTrack) {
 
 // invoked in RMGEventAction::EndOfEventAction()
 void IsotopeOutputScheme::StoreEvent(const G4Event *event) {
-  auto rmg_man = RMGManager::Instance();
+  auto rmg_man = RMGOutputManager::Instance();
   if (rmg_man->IsPersistencyEnabled()) {
     RMGLog::OutDev(RMGLog::debug, "Filling persistent data vectors");
     const auto ana_man = G4AnalysisManager::Instance();
