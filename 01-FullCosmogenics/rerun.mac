@@ -10,6 +10,10 @@
 
 #/RMG/Processes/OpticalPhysics true
 /RMG/Output/ActivateOutputScheme CustomIsotopeFilter
+
+/RMG/Geometry/RegisterDetectorsFromGDML Germanium
+#/RMG/Geometry/RegisterDetector Optical PMT.* 6000
+
 /run/initialize
 
 /RMG/Output/IsotopeFilter/AddIsotope 77 32

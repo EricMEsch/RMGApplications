@@ -88,6 +88,7 @@ sed -i '/^\/RMG\/Output\/ActivateOutputScheme IsotopeFilter/a /RMG/Output/Activa
 sed -i '/^\/RMG\/Output\/ActivateOutputScheme IsotopeFilter/a /RMG/Output/ActivateOutputScheme IsotopeOutputScheme' RestoreSeedRun.mac
 # Uncomment the optical processes
 sed -i 's|^#\(/RMG/Processes/OpticalPhysics true\)|\1|' RestoreSeedRun.mac
+sed -i 's|^#\(/RMG/Geometry/RegisterDetector Optical PMT.* 6000\)|\1|' RestoreSeedRun.mac
 
 # Add the command that reads in the seeds and only generate those events
 echo "/random/resetEngineFromEachEvent true" >> RestoreSeedRun.mac

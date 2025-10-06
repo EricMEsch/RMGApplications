@@ -9,6 +9,7 @@
 #include "G4OpticalPhoton.hh"
 #include "G4ProcessManager.hh"
 #include "G4Scintillation.hh"
+#include "G4Cerenkov.hh"
 
 #include "RMGLog.hh"
 
@@ -29,16 +30,16 @@ void CosmogenicPhysics::ConstructOptical() {
   op_par->SetBoundaryInvokeSD(true);
 
   // no scintillation process for now
-  auto scint_proc = new G4Scintillation("Scintillation");
-  scint_proc->SetTrackSecondariesFirst(true);
-  scint_proc->SetVerboseLevel(G4VModularPhysicsList::verboseLevel);
+  //auto scint_proc = new G4Scintillation("Scintillation");
+  //scint_proc->SetTrackSecondariesFirst(true);
+  //scint_proc->SetVerboseLevel(G4VModularPhysicsList::verboseLevel);
 
   // optical processes
   auto absorption_proc = new G4OpAbsorption();
   auto boundary_proc = new G4OpBoundaryProcess();
   auto rayleigh_scatt_proc = new G4OpRayleigh();
   auto wls_proc = new G4OpWLS();
-  auto cerenkov_proc = new RNGCerenkov();
+  auto cerenkov_proc = new G4Cerenkov();
 
   G4cout << "Maximum beta change per step: "
          << op_par->GetCerenkovMaxBetaChange() << G4endl;
@@ -59,16 +60,17 @@ void CosmogenicPhysics::ConstructOptical() {
     auto proc_manager = particle->GetProcessManager();
     auto particle_name = particle->GetParticleName();
 
-    if (scint_proc->IsApplicable(*particle)) {
-      proc_manager->AddProcess(scint_proc);
+    //if (scint_proc->IsApplicable(*particle)) {
+      //proc_manager->AddProcess(scint_proc);
       //  This messes with the random engine (probably changes the order)
       //  proc_manager->SetProcessOrderingToLast(scint_proc,
       //  G4ProcessVectorDoItIndex::idxAtRest);
       //  proc_manager->SetProcessOrderingToLast(scint_proc,
       //  G4ProcessVectorDoItIndex::idxPostStep);
-    }
+    //}
 
-    if (cerenkov_proc->IsApplicable(*particle)) {
+    if (cerenkov_proc->IsApplicable(*particle) &&
+        particle_name != "mu+" && particle_name != "mu-") {
       proc_manager->AddProcess(cerenkov_proc);
       proc_manager->SetProcessOrdering(cerenkov_proc,
                                        G4ProcessVectorDoItIndex::idxPostStep);

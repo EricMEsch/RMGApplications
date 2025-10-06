@@ -17,6 +17,10 @@ public:
   G4double
   PostStepGetPhysicalInteractionLength(const G4Track &aTrack, G4double,
                                        G4ForceCondition *condition) override;
+
+private:
+  int lastEvtID = -1;
+  int nPhotonsThisEvent = 0;
 };
 
 #endif

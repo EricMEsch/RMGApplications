@@ -1,5 +1,7 @@
 
 #include "RNGCerenkov.hh"
+#include "G4EventManager.hh"
+#include "G4Event.hh"
 
 G4ThreadLocal CLHEP::HepRandomEngine *RNGCerenkov::fAlternativeEngine = nullptr;
 
@@ -17,6 +19,7 @@ G4VParticleChange *RNGCerenkov::PostStepDoIt(const G4Track &track,
 
   // Call the original Cerenkov PostStepDoIt
   G4VParticleChange *particleChange = G4Cerenkov::PostStepDoIt(track, step);
+
 
   G4Random::setTheEngine(defaultEngine);
 

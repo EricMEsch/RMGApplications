@@ -4,7 +4,6 @@
 #include "CosmogenicPhysics.hh"
 #include "CustomIsotopeFilter.hh"
 #include "CustomMUSUNGenerator.hh"
-#include "HardwareQEOverride.hh"
 #include "RNGTrackingAction.hh"
 #include "IsotopeOutputScheme.hh"
 
@@ -15,41 +14,14 @@
 
 #include "CLI11.hpp"
 
-// The names can also be hardcoded when following a strict name convention
-// But as the number of rows and columns can change in the future this is better
-// Still the PMT name needs to start with "PMT"!
-std::vector<std::string> getPMTNames(std::string filename) {
-  std::vector<std::string> PMTnames;
-  std::ifstream gdmlfile;
-  gdmlfile.open(filename);
-  std::string key = "physvol name=\"PMT"; // The physical volume names have this
-                                          // as indicator before them
-  if (!gdmlfile) {
-    throw std::runtime_error("Error opening file: " + filename);
-  }
-  // Search the file for a physical volume that starts with "PMT"
-  std::string line;
-  while (std::getline(gdmlfile, line)) {
-    size_t pos = line.find(key);
-    if (pos != std::string::npos) {
-      line.erase(0, pos + key.length());
-      pos = line.find("0x"); // Start of the hexadecimal pointer that will be
-                             // ignored by geant4
-      std::string name =
-          "PMT" + line.substr(0, pos); // Deleted the "PMT" out of the name
-                                       // previously so add it again
-      PMTnames.push_back(name);
-    }
-  }
-  return PMTnames;
-}
-
 int main(int argc, char **argv) {
   CLI::App app{"Cosmogenic Simulations"};
   int nthreads = 16;
   std::string macroName;
   int rngFlag = 0;
   std::string filename;
+
+  std::string outputfilename = "build/RestoredOutput.hdf5";
 
   app.add_option("-m,--macro", macroName,
                  "<Geant4 macro filename> Default: None");
@@ -58,53 +30,39 @@ int main(int argc, char **argv) {
   app.add_option("-t, --nthreads", nthreads,
                  "<number of threads to use> Default: 16");
   app.add_option("-r,--rng", rngFlag, "RNG restoration mode: 0 deactivated, 1 for prerun, 2 for restoration run");
+  app.add_option("-o,--output", outputfilename,
+                 "<output filename> Default: build/RestoredOutput.hdf5>");
 
   CLI11_PARSE(app, argc, argv);
 
-
-  std::string outputfilename = "build/RestoredOutput.hdf5";
-
   RMGManager manager("FullCosmogenics", argc, argv);
-  // Overwrite the standard Hardware with one that reads
-  // in the PMT QE from datasheet
-  manager.SetUserInit(new HardwareQEOverride());
   // Overwrite RMGPhysics to use own Optical Processes
   std::cout << "current gdml file: " << filename << std::endl;
   manager.GetDetectorConstruction()->IncludeGDMLFile(filename);
 
-  // Get the physical volume names of the PMTs to register them
-  std::vector<std::string> PMTnames = getPMTNames(filename);
-  int id = 0;
-  // Register all of the PMTs
-  for (const auto &name : PMTnames) {
-    manager.GetDetectorConstruction()->RegisterDetector(kOptical,
-                                                        name, id);
-    std::cout << "Name: " << name << " UID: " << id << std::endl;
-    id++;
-  }
-  // Register the germanium volume as germanium detector.
-  //manager.GetDetectorConstruction()->RegisterDetector(kGermanium,
-  //                                                    "Ge_phys", id + 1000);
-
   // Custom User init
   auto user_init = manager.GetUserInit();
+  
   if (rngFlag != 0) {
-    user_init->AddOptionalOutputScheme<CustomIsotopeFilter>(
+    if(rngFlag == 1) {
+      user_init->AddOptionalOutputScheme<CustomIsotopeFilter>(
         "CustomIsotopeFilter");
-    user_init->AddTrackingAction<RNGTrackingAction>();
-    user_init->SetUserGenerator<CustomMUSUNGenerator>();
-    auto *RunManager = manager.GetG4RunManager();
-    RunManager->SetNumberOfThreads(16);
-    manager.SetUserInit(new CosmogenicPhysics());
-    if(rngFlag == 1)
       outputfilename = "build/output.csv";
-    else
-      outputfilename = "build/RestoredOutput.hdf5";
+    }
+    else {
+      user_init->SetUserGenerator<CustomMUSUNGenerator>();
+      user_init->AddTrackingAction<RNGTrackingAction>();
+    }
   }
+  // Dont ask why but this is here to avoid a segfault
+  auto *RunManager = manager.GetG4RunManager();
+  RunManager->SetNumberOfThreads(nthreads);
+  manager.SetUserInit(new CosmogenicPhysics());
 
   user_init->AddOptionalOutputScheme<IsotopeOutputScheme>(
     "IsotopeOutputScheme");
 
+  
   // Interactive or batch mode?
   if (!macroName.empty())
     manager.IncludeMacroFile(macroName);
