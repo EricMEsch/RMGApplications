@@ -8,16 +8,19 @@ macro_content = """\
 #/tracking/verbose 2
 
 /RMG/Processes/HadronicPhysics Shielding
-/RMG/Processes/OpticalPhysics true
+#/RMG/Processes/OpticalPhysics true
 
-/RMG/Output/ActivateOutputScheme IsotopeFilter
+/RMG/Output/ActivateOutputScheme CustomIsotopeFilter
 
 /RMG/Geometry/RegisterDetectorsFromGDML Germanium
-/RMG/Geometry/RegisterDetector Optical PMT.* 6000
+/RMG/Geometry/RegisterDetectorsFromGDML Optical
+/RMG/Geometry/RegisterDetector Scintillator atmosphericlar 12000
+#/RMG/Geometry/RegisterDetector Scintillator undergroundlar 12001
 
 /run/initialize
 
 /RMG/Output/IsotopeFilter/AddIsotope 77 32
+/RMG/Output/IsotopeFilter/DiscardPhotonsIfIsotopeNotProduced true
 /RMG/Output/NtuplePerDetector false
 
 /RMG/Processes/Stepping/DaughterNucleusMaxLifetime 1 hour
@@ -27,8 +30,13 @@ macro_content = """\
 /RMG/Generator/Select MUSUNCosmicMuons
 /RMG/Generator/MUSUNCosmicMuons/MUSUNFile musun/combined_file.dat
 
-#/process/optical/cerenkov/setStackPhotons false
 #/process/optical/cerenkov/setTrackSecondariesFirst
+
+#/RMG/Output/Scintillator/Cluster/PreClusterOutputs true
+#/RMG/Output/Scintillator/Cluster/CombineLowEnergyElectronTracks true
+#/RMG/Output/Scintillator/Cluster/RedistributeGammaEnergy true
+#/RMG/Output/Scintillator/Cluster/PreClusterDistance 1 mm
+#/RMG/Output/Scintillator/Cluster/PreClusterTimeThreshold 10 us
 
 /run/beamOn 1000000
 """

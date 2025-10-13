@@ -29,8 +29,7 @@ class G4Event;
 class CustomIsotopeFilter : public RMGIsotopeFilterScheme {
 
 public:
-  void AssignOutputNames(G4AnalysisManager *ana_man) override;
-  void StoreEvent(const G4Event *) override;
+  std::optional<G4ClassificationOfNewTrack> StackingActionClassify(const G4Track*, int stage) override;
 };
 
 #endif

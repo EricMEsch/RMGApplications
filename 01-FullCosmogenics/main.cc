@@ -45,8 +45,6 @@ int main(int argc, char **argv) {
   
   if (rngFlag != 0) {
     if(rngFlag == 1) {
-      user_init->AddOptionalOutputScheme<CustomIsotopeFilter>(
-        "CustomIsotopeFilter");
       outputfilename = "build/output.csv";
     }
     else {
@@ -54,6 +52,10 @@ int main(int argc, char **argv) {
       user_init->AddTrackingAction<RNGTrackingAction>();
     }
   }
+
+  user_init->AddOptionalOutputScheme<CustomIsotopeFilter>(
+        "CustomIsotopeFilter");
+
   // Dont ask why but this is here to avoid a segfault
   auto *RunManager = manager.GetG4RunManager();
   RunManager->SetNumberOfThreads(nthreads);
