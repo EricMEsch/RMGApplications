@@ -1,0 +1,14 @@
+/RMG/Processes/HadronicPhysics Shielding
+
+/RMG/Output/ActivateOutputScheme Track
+
+/run/initialize
+
+/RMG/Output/Track/AddProcessFilter nCapture
+
+/RMG/Generator/Confine UnConfined
+
+/RMG/Generator/Select MUSUNCosmicMuons
+/RMG/Generator/MUSUNCosmicMuons/MUSUNFile musun/combined_file.dat
+
+/run/beamOn 1000000

@@ -12,3 +12,7 @@
 /vis/scene/add/trajectories smooth
 /vis/scene/add/hits
 /vis/scene/endOfEventAction accumulate
+
+/vis/viewer/addCutawayPlane 0 0 0 mm 1 0 0
+/vis/viewer/set/viewpointVector -1 0 0
+/vis/viewer/set/upVector 0 0 1

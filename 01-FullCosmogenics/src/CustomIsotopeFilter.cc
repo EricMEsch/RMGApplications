@@ -51,9 +51,9 @@ std::optional<G4ClassificationOfNewTrack> CustomIsotopeFilter::StackingActionCla
           if (aTrack->GetDefinition() == G4Electron::ElectronDefinition()) {
             return fKill; // This might be an issue for positrons
           }
-          //else {
-          //  return std::nullopt; // Either simulate directly or keep for later. Might make Cerenkov light.
-          //}
+          else {
+            return std::nullopt; // Either simulate directly or keep for later. Might make Cerenkov light.
+          }
         }
         return fWaiting;
       }

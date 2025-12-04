@@ -8,9 +8,10 @@ macro_content = """\
 #/tracking/verbose 2
 
 /RMG/Processes/HadronicPhysics Shielding
-#/RMG/Processes/OpticalPhysics true
+/RMG/Processes/OpticalPhysics true
 
 /RMG/Output/ActivateOutputScheme CustomIsotopeFilter
+/RMG/Output/ActivateOutputScheme IsotopeOutputScheme
 
 /RMG/Geometry/RegisterDetectorsFromGDML Germanium
 /RMG/Geometry/RegisterDetectorsFromGDML Optical
@@ -32,11 +33,11 @@ macro_content = """\
 
 #/process/optical/cerenkov/setTrackSecondariesFirst
 
-#/RMG/Output/Scintillator/Cluster/PreClusterOutputs true
-#/RMG/Output/Scintillator/Cluster/CombineLowEnergyElectronTracks true
-#/RMG/Output/Scintillator/Cluster/RedistributeGammaEnergy true
-#/RMG/Output/Scintillator/Cluster/PreClusterDistance 1 mm
-#/RMG/Output/Scintillator/Cluster/PreClusterTimeThreshold 10 us
+/RMG/Output/Scintillator/Cluster/PreClusterOutputs true
+/RMG/Output/Scintillator/Cluster/CombineLowEnergyElectronTracks true
+/RMG/Output/Scintillator/Cluster/RedistributeGammaEnergy true
+/RMG/Output/Scintillator/Cluster/PreClusterDistance 1 mm
+/RMG/Output/Scintillator/Cluster/PreClusterTimeThreshold 10 us
 
 /run/beamOn 1000000
 """
@@ -49,7 +50,7 @@ try:
         [
             "./build/FullCosmogenics",
             "-m", str(macro_file),
-            "-g", "gdml/l1000_cosm_giga_reduced.gdml",
+            "-g", "gdml/l1000_cosm_giga_reduced_new.gdml",
             "-o", "build/out.lh5",
             "-t", "16"
         ],

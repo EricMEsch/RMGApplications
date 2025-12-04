@@ -1,0 +1,22 @@
+/RMG/Output/ActivateOutputScheme GeometryCheck
+
+/run/initialize
+
+/RMG/Generator/Confine Volume
+/RMG/Generator/Confinement/SampleOnSurface
+/RMG/Generator/Confinement/FirstSamplingVolume Geometrical
+
+/RMG/Generator/Confinement/Geometrical/AddSolid Box
+/RMG/Generator/Confinement/Geometrical/CenterPositionX 0 m
+/RMG/Generator/Confinement/Geometrical/CenterPositionY 0 m
+/RMG/Generator/Confinement/Geometrical/CenterPositionZ 0 m
+/RMG/Generator/Confinement/Geometrical/Box/XLength 20 m
+/RMG/Generator/Confinement/Geometrical/Box/YLength 20 m
+/RMG/Generator/Confinement/Geometrical/Box/ZLength 20 m
+
+/RMG/Generator/Select GPS
+/gps/particle     geantino
+/gps/energy       1 MeV
+/gps/ang/type     iso
+
+/run/beamOn 100000
