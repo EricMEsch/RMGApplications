@@ -14,7 +14,7 @@
 namespace u = CLHEP;
 
 CustomSteppingAction::CustomSteppingAction() {
-const auto ana_man = G4AnalysisManager::Instance();
+  const auto ana_man = G4AnalysisManager::Instance();
   auto vid = RMGOutputManager::Instance()
                  ->CreateAndRegisterAuxNtuple("steps", "CustomSteppingAction", ana_man);
 

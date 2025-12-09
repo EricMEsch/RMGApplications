@@ -29,43 +29,75 @@
 
 namespace u = CLHEP;
 
-std::optional<G4ClassificationOfNewTrack> CustomIsotopeFilter::StackingActionClassify(
-    const G4Track* aTrack,
-    int stage
-) {
+void CustomIsotopeFilter::AssignOutputNames(G4AnalysisManager *ana_man) {
+  
+  auto vid = RMGOutputManager::Instance()
+                 ->CreateAndRegisterAuxNtuple("musun", "CustomIsotopeFilter", ana_man);
 
-  bool temporary_switch = true;
-  // we are only interested in stacking into stage 1 after stage 0 finished.
-  if (stage != 0) return std::nullopt;
-  if (!temporary_switch) return std::nullopt;
-  // defer tracking of electrons.
-  if (aTrack->GetDefinition() == G4Positron::PositronDefinition() ||
-      aTrack->GetDefinition() == G4Electron::ElectronDefinition()) {
-      
-    // Check if the track is in the "tank" or "tank_water" volume
-    auto* volume = aTrack->GetTouchableHandle()->GetVolume();
-    if (volume) {
-      auto volName = volume->GetName();
-      if (volName == "tank" || volName == "tank_water" || volName == "outercryostat") {
-        if(aTrack->GetKineticEnergy() < 250 * u::keV) {
-          if (aTrack->GetDefinition() == G4Electron::ElectronDefinition()) {
-            return fKill; // This might be an issue for positrons
-          }
-          else {
-            return std::nullopt; // Either simulate directly or keep for later. Might make Cerenkov light.
-          }
-        }
-        return fWaiting;
-      }
-    }
-    // Don't defer high energy electrons, as they might cause inelastic scattering and therefore nCaptures
-    if (aTrack->GetKineticEnergy() > 10 * u::MeV || aTrack->GetKineticEnergy() < 100 * u::keV) {
-      return std::nullopt;
-    }
-    
-    return fWaiting;
+  ana_man->CreateNtupleIColumn(vid, "evtid");
+  ana_man->CreateNtupleIColumn(vid, "type");
+  ana_man->CreateNtupleDColumn(vid, "Ekin");
+  ana_man->CreateNtupleDColumn(vid, "x");
+  ana_man->CreateNtupleDColumn(vid, "y");
+  ana_man->CreateNtupleDColumn(vid, "z");
+  ana_man->CreateNtupleDColumn(vid, "px");
+  ana_man->CreateNtupleDColumn(vid, "py");
+  ana_man->CreateNtupleDColumn(vid, "pz");
+
+  ana_man->FinishNtuple(vid);
+}
+
+void CustomIsotopeFilter::StoreEvent(const G4Event *event) {
+
+  if (ShouldDiscardEvent(event))
+    return;
+  // stores the random seed for this event to be reproducible
+  G4RunManager::GetRunManager()->rndmSaveThisEvent();
+
+  auto rmg_man = RMGOutputManager::Instance();
+  const auto ana_man = G4AnalysisManager::Instance();
+  auto vntupleid = rmg_man->GetAuxNtupleID("musun");
+
+  auto primary_vertex = event->GetPrimaryVertex(0);
+  int n_primaries = primary_vertex->GetNumberOfParticle();
+  if (n_primaries != 1)
+    RMGLog::Out(RMGLog::fatal, "More than one primary was found! This is not "
+                               "expected in this Cosmogenic simulation.");
+
+  auto primary = primary_vertex->GetPrimary(0);
+
+  int vcol_id = 0;
+  ana_man->FillNtupleIColumn(vntupleid, vcol_id++, event->GetEventID());
+
+  G4ParticleTable *theParticleTable = G4ParticleTable::GetParticleTable();
+  if (primary->GetParticleDefinition() ==
+      theParticleTable->FindParticle("mu-")) {
+    ana_man->FillNtupleIColumn(vntupleid, vcol_id++, 10);
+  } else {
+    if (primary->GetParticleDefinition() !=
+        theParticleTable->FindParticle("mu+"))
+      RMGLog::Out(RMGLog::fatal,
+                  "Primary is not a muon. (This is a cosmogenic simulation)");
+    ana_man->FillNtupleIColumn(vntupleid, vcol_id++, 11);
   }
-  return std::nullopt;
+
+  ana_man->FillNtupleDColumn(vntupleid, vcol_id++,
+                             primary->GetKineticEnergy() / u::GeV);
+  ana_man->FillNtupleDColumn(vntupleid, vcol_id++,
+                             primary_vertex->GetX0() / u::cm);
+  ana_man->FillNtupleDColumn(vntupleid, vcol_id++,
+                             primary_vertex->GetY0() / u::cm);
+  ana_man->FillNtupleDColumn(vntupleid, vcol_id++,
+                             primary_vertex->GetZ0() / u::cm);
+  ana_man->FillNtupleDColumn(vntupleid, vcol_id++,
+                             primary->GetMomentumDirection().getX());
+  ana_man->FillNtupleDColumn(vntupleid, vcol_id++,
+                             primary->GetMomentumDirection().getY());
+  ana_man->FillNtupleDColumn(vntupleid, vcol_id++,
+                             primary->GetMomentumDirection().getZ());
+
+  // NOTE: must be called here for hit-oriented output
+  ana_man->AddNtupleRow(vntupleid);
 }
 
 // vim: tabstop=2 shiftwidth=2 expandtab
